@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Route, Routes } from "react-router";
 
 import Dashboard from "./components/Dashboard/Dashboard";
@@ -9,9 +9,21 @@ import SignUpForm from "./components/SignUpForm/SignUpForm";
 
 import HootList from "./components/HootList/HootList";
 import { UserContext } from "./contexts/UserContext";
+import * as hootService from "./services/hootService";
+import HootDetails from './components/HootDetails/HootDetails';
 
 const App = () => {
   const { user } = useContext(UserContext);
+  const [hoots, setHoots] = useState([]);
+
+  useEffect(() => {
+    const fetchAllHoots = async () => {
+      const hootsData = await hootService.index();
+
+      setHoots(hootsData);
+    };
+    if (user) fetchAllHoots();
+  }, [user]);
 
   return (
     <>
@@ -22,7 +34,11 @@ const App = () => {
         {user ? (
           <>
             {/* Protected routes (available only to signed-in users) */}
-            <Route path="/hoots" element={<HootList />} />
+            <Route path="/hoots" element={<HootList hoots={hoots} />} />            {/* Add this route! */}
+            <Route 
+              path='/hoots/:hootId'
+              element={<HootDetails />}
+            />
           </>
         ) : (
           <>
