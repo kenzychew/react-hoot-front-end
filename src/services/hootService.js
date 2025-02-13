@@ -56,9 +56,15 @@ const create = async (hootFormData) => {
       },
       body: JSON.stringify(hootFormData),
     });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
     return res.json();
   } catch (error) {
-    console.log(error);
+    console.error("Error creating hoot:", error);
+    throw error;
   }
 };
 

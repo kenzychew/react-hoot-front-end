@@ -29,9 +29,11 @@ const App = () => {
 
   const handleAddHoot = async (hootFormData) => {
     console.log('hootFormData', hootFormData);
-    const newHoot = await hootService.create(hootFormData);
-    setHoots([newHoot, ...hoots]);
-    navigate('/hoots');
+    const response = await hootService.create(hootFormData);
+    if (response?.hoot) {
+      setHoots([response.hoot, ...hoots]);
+      navigate('/hoots');
+    }
   };
 
   return (

@@ -7,6 +7,14 @@ const HootList = ({ hoots }) => {
     return <main>No Hoots</main>;
   }
 
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Unknown date';
+    const date = new Date(dateString);
+    return date instanceof Date && !isNaN(date) 
+      ? date.toLocaleDateString()
+      : 'Invalid date';
+  };
+
   return (
     <main>
       {hoots.map((hoot) => (
@@ -15,8 +23,8 @@ const HootList = ({ hoots }) => {
             <header>
               <h2>{hoot.title}</h2>
               <p>
-                {`${hoot.author.username} posted on
-                ${new Date(hoot.createdAt).toLocaleDateString()}`}
+                {`${hoot.author?.username || 'Unknown user'} posted on
+                ${formatDate(hoot.createdAt)}`}
               </p>
             </header>
             <p>{hoot.text}</p>
