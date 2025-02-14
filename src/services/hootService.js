@@ -23,51 +23,85 @@ async function index() {
 
 async function show(hootId) {
   const url = `${BASE_URL}/${hootId}`;
-  try {
-    const options = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    };
-    const response = await fetch(url, options);
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
-
-    const json = await response.json();
-    if (!json.hoot) {
-      throw new Error("Hoot not found");
-    }
-    return json.hoot;
-  } catch (error) {
-    console.error(error.message);
-    throw error;
+  // try {
+  const options = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  };
+  const response = await fetch(url, options);
+  console.log("response", response.ok);
+  if (!response.ok) {
+    throw new Error(`Response status: ${response.status}`);
   }
+
+  const json = await response.json();
+  console.log("json", json);
+  return json.hoot;
+  // } catch (error) {
+  //   console.log("error by simon");
+  //   console.error(error.message);
+  // }
 }
 
 const create = async (hootFormData) => {
+  const url = `${BASE_URL}`;
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify(hootFormData),
+  };
+  const response = await fetch(url, options);
+  if (!response.ok) {
+    throw new Error(`Response status: ${response.status}`);
+  }
+
+  const json = await response.json();
+  return json.hoot;
+};
+
+const createComment = async (hootId, commentFormData) => {
   try {
-    const url = `${BASE_URL}`;
-    const options = {
+    const res = await fetch(`${BASE_URL}/${hootId}/comments`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(hootFormData),
-    };
-    const res = await fetch(url, options);
-
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-
+      body: JSON.stringify(commentFormData),
+    });
     return res.json();
   } catch (error) {
-    console.error("Error creating hoot:", error);
-    throw error;
+    console.log(error);
   }
 };
 
-export { index, show, create };
+// src/services/hootService.js
+
+const deleteHoot = async (hootId) => {
+  try {
+    const res = await fetch(`${BASE_URL}/${hootId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    });
+    return res.json();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export {
+  index,
+  show,
+  create,
+  createComment,
+  // Add export:
+  deleteHoot,
+};

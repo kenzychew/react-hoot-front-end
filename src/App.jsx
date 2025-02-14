@@ -7,11 +7,12 @@ import NavBar from "./components/NavBar/NavBar";
 import SignInForm from "./components/SignInForm/SignInForm";
 import SignUpForm from "./components/SignUpForm/SignUpForm";
 
+import CommentForm from "./components/CommentForm/CommentForm";
+import HootDetails from "./components/HootDetails/HootDetails";
+import HootForm from "./components/HootForm/HootForm";
 import HootList from "./components/HootList/HootList";
 import { UserContext } from "./contexts/UserContext";
 import * as hootService from "./services/hootService";
-import HootDetails from './components/HootDetails/HootDetails';
-import HootForm from "./components/HootForm/HootForm";
 
 const App = () => {
   const { user } = useContext(UserContext);
@@ -27,13 +28,15 @@ const App = () => {
     if (user) fetchAllHoots();
   }, [user]);
 
-  const handleAddHoot = async (hootFormData) => {
-    console.log('hootFormData', hootFormData);
-    const response = await hootService.create(hootFormData);
-    if (response?.hoot) {
-      setHoots([response.hoot, ...hoots]);
-      navigate('/hoots');
-    }
+  const handleAddHoot = (newHoot) => {
+    setHoots([newHoot, ...hoots]);
+    navigate("/hoots");
+  };
+
+  const handleDeleteHoot = async (hootId) => {
+    const deletedHoot = await hootService.deleteHoot(hootId);
+    setHoots(hoots.filter((hoot) => hoot._id !== deletedHoot.hootId));
+    navigate("/hoots");
   };
 
   return (
@@ -45,12 +48,17 @@ const App = () => {
         {user ? (
           <>
             {/* Protected routes (available only to signed-in users) */}
-            <Route path="/hoots" element={<HootList hoots={hoots} />} />            {/* Add this route! */}
-            <Route 
-              path='/hoots/:hootId'
-              element={<HootDetails />}
+            <Route path="/hoots" element={<HootList hoots={hoots} />} />
+            <Route
+              path="/hoots/new"
+              element={<HootForm handleAddHoot={handleAddHoot} />}
             />
-            <Route path="/hoots/new" element={<HootForm handleAddHoot={handleAddHoot} />} />
+            <Route
+              path="/hoots/:hootId"
+              element={<HootDetails handleDeleteHoot={handleDeleteHoot} />}
+            >
+              <Route path="comments/new" element={<CommentForm />} />
+            </Route>
           </>
         ) : (
           <>
