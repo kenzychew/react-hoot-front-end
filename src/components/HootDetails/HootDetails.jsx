@@ -43,6 +43,7 @@ const HootDetails = (props) => {
           </p>
           {hoot.author._id === user._id && (
             <>
+              <Link to={`/hoots/${hootId}/edit`}>Edit</Link>
               <button onClick={() => props.handleDeleteHoot(hootId)}>
                 Delete
               </button>

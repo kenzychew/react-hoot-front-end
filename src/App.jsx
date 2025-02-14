@@ -39,6 +39,13 @@ const App = () => {
     navigate("/hoots");
   };
 
+  const handleUpdateHoot = async (hootId, hootFormData) => {
+    const updatedHoot = await hootService.update(hootId, hootFormData);
+    setHoots(hoots.map((hoot) => (hootId === hoot._id ? updatedHoot : hoot)));
+    navigate(`/hoots/${hootId}`);
+  };
+
+
   return (
     <>
       <pre>{JSON.stringify(user)}</pre>
@@ -58,7 +65,9 @@ const App = () => {
               element={<HootDetails handleDeleteHoot={handleDeleteHoot} />}
             >
               <Route path="comments/new" element={<CommentForm />} />
+              {/* <Route path="edit" element={<HootForm />} /> */}
             </Route>
+            <Route path="/hoots/:hootId/edit" element={<HootForm handleUpdateHoot={handleUpdateHoot} />} />
           </>
         ) : (
           <>
