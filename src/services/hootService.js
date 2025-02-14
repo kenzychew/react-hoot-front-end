@@ -48,14 +48,16 @@ async function show(hootId) {
 
 const create = async (hootFormData) => {
   try {
-    const res = await fetch(BASE_URL, {
+    const url = `${BASE_URL}`;
+    const options = {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(hootFormData),
-    });
+    };
+    const res = await fetch(url, options);
 
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);

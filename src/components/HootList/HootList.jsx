@@ -23,7 +23,7 @@ const HootList = ({ hoots }) => {
             <header>
               <h2>{hoot.title}</h2>
               <p>
-                {`${hoot.author?.username || 'Unknown user'} posted on
+                {`${hoot?.author?.username || 'Unknown user'} posted on
                 ${formatDate(hoot.createdAt)}`}
               </p>
             </header>

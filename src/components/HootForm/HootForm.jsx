@@ -29,6 +29,7 @@ const HootForm = (props) => {
           name='title'
           id='title-input'
           value={formData.title}
+          pattern="[A-Z]\w+"
           onChange={handleChange}
         />
         <label htmlFor='text-input'>Text</label>
