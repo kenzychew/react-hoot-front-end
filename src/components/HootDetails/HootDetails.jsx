@@ -28,6 +28,18 @@ const HootDetails = (props) => {
     setHoot({ ...hoot, comments: [...hoot.comments, newComment] });
   };
 
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await hootService.deleteComment(hootId, commentId);
+      setHoot({
+        ...hoot,
+        comments: hoot.comments.filter((c) => c._id !== commentId)
+      });
+    } catch (error) {
+      setMessage(error.message);
+    }
+  };
+
   if (!hoot) return <main>{message}</main>;
 
   return (
@@ -70,6 +82,11 @@ const HootDetails = (props) => {
                 {`${comment.author.username} posted on
                 ${new Date(comment.createdAt).toLocaleDateString()}`}
               </p>
+              {comment.author._id === user._id && (
+                <button onClick={() => handleDeleteComment(comment._id)}>
+                  Delete Comment
+                </button>
+              )}
             </header>
             <p>{comment.text}</p>
           </article>
